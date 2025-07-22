@@ -1,0 +1,307 @@
+---
+title: "Day 1 - Reproducible research is way better for everyone"
+format: 
+  html:
+    embed-resources: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Schedule
+
+Day 1: Reproducible and productive research with R
+
+- 08:30-09:00: pre-class installation issues
+- 09:00-10:30: Session 1 - Welcome, Challenges to Reproducible Research 
+- 10:00-10:30: Morning tea 
+- 11:00-12:30: Session 2 - Collaboration and Version control with Git & Github
+- 12:30-13:15: Lunch
+- 13:15-14:45: Session 3 - Techniques for Reproducible Research (part 1)
+- 15:00-16:00: Session 4 - Techniques for Reproducible Research (part 2)
+
+Day 2: Scaling up your computations
+
+
+# Welcome
+
+Logistics
+
+- toilets
+
+Expectations
+
+- Why are we here: need code & stats
+
+- We are practising scientists, also trained as instructors for software and data carpentry
+  - here to guide your learning
+  - it's *one* way to do it, not the only way
+
+- We will show you the key ingredients for data analysis the way we do it
+  - we can't turn you into crack analysts in 2 days
+  - continue your journey. Hopefully a fun one!
+
+- We aim for course be inclusive
+  - it's a diverse crowd, everyone has complimentary skills and experiences
+  - there is no dumb question
+  - anti-social behavior not welcome
+
+- We try hard to move everyone along
+  - raised hands - I need help
+
+- Live coding
+  - We don't have fully worked files for you, there's lots of this kind of help on the web. 
+  - We're going to do a lot of live coding -> why?
+  - Use the circulated files to take notes as you follow along
+
+Groups
+
+- work in group of 1-3
+- in groups
+	- Introduce yourself
+  - how long have you used R
+  - What % of your time you expect to spend in the field/lab or at the computer
+
+# Sesssion 1: Challenges to Reproducible Research 
+<!-- Daniel -->
+
+See supporting slides for [this session here](https://docs.google.com/presentation/d/1eUgeA-IFkLGsuSjUNt_aFTCFSvZtYHvNs97ilKI-G4E/edit?usp=sharing)
+
+
+- The big vision of the course: 
+
+  1. A workflow for reproducible research (today) and
+  2. Techniques scaling up you computations (tomorrow)
+
+- Goals for today: 
+
+  1. Reproducibility for a) Yourself, b) Your collaborator (supervisor), c).Stranger publication
+  2. Enjoy coding! Feeling in control. Start and stop projects. Collaboration. Effivient computations
+
+- Goals for tomorrow: 
+
+TODO
+
+- By the end of course, collaboratively built course notes and reproducible analyses, using new techniques
+
+
+## Activity: Identify challenges for reproducible research
+
+- Brainstorm of challenges
+  - break into groups of 3-4
+  - Part 1: identify 3 challenges/problems for reproducibility (share around the group)
+  - Part 2: go deeper on 1 issue, including possible solutions
+
+- Starting example:
+  - Download repro, example (zip)
+  - We're going to build on this!
+  - The data: Penguins! 
+  - Scaling up challenges  
+
+# Session 2: Collaboration and Version control with Git & Github
+<!-- Will  -->
+
+See supporting slides for [this session here](https://docs.google.com/presentation/d/1eUgeA-IFkLGsuSjUNt_aFTCFSvZtYHvNs97ilKI-G4E/edit?usp=sharing)
+
+
+Topics
+
+- what is a git repo
+- what is a commit
+- git vs github (and gitlab, bitbucket etc)
+- syncing: pull & push
+- Forks & Pull Requests
+- browsing history on github
+
+Activities (slide + demo):
+
+
+## Activity: General Github workflow 
+
+### Clone class repo
+
+**Goal**: Use github desktop to clone (download) the class repository to your computer.
+
+**Steps:**
+
+1. Open GitHub Desktop.
+2. Click "File" > "Clone repository".
+3. In the "URL" tab, paste the repository URL from GitHub.
+4. Choose the local path where you want to save the repo.
+5. Click "Clone".
+
+### Create your own repo
+
+**Goal**: create a new repository with your partner, and start colaborating on content
+
+**Steps:**
+
+1. Talk. to your partner(s). Pick someone to initialise the repo
+2. Everyone make sure your GitHub and GitHub Desktop are working (esp. authentication)
+3. Initialize a repo in GitHub desktop -- give it a logical name that makes sense to you and your collaborators
+4. Add your new collaborators to this repo in Github
+5. collaborators clone this Repo
+6. One of the team moves day 1 and day 2 files into this Repo
+7. "Commit" this file and give the commit a name
+8. "Push" the commit to the github
+9. Other collaborators pull this file to their local computers
+10. Talk. Plan who's making changes
+11. One collaborator makes changes to one of the files (adds a solution)
+12. Commits these changes -- gives it a informative name
+13. Push these change to GitHub
+14. Everyone else pulls.
+15. Repeat steps 10-14 as needed until project is done
+
+# Sessions 3-4: Technqiues for Reproducible Research 
+<!-- Daniel -->
+
+13:30-16:00
+
+**Goal**: Share helpful techniques, from our own experience, that aid with making research reproducible and more fun.
+
+## Setting up and exploring the data for the short course
+<!-- Will -->
+
+### A quick introduction to the data
+
+In this course, we will be using data on penguins from the Global Biodiversity Information Facility (GBIF). It contains information on the location and number of individuals observed.
+
+This makes a map of the world
+
+```{r}
+library(tidyverse)
+
+world <- map_data("world")
+worldplot <- ggplot() +
+    geom_polygon(data = world, aes(x = long, y = lat, group = group), fill= "grey") +
+    coord_fixed(1.3) 
+
+worldplot
+```
+
+This loads the data for emperor penguins
+
+```{r}
+emp <-
+  read_csv("data/penguins/Aptenodytes forsteri.csv") |>
+  filter(!is.na(individualCount)) |>
+  mutate(more_than_thousand = individualCount > 1000)
+
+worldplot +
+    geom_point(
+      data = emp,
+      aes(x = decimalLongitude, y = decimalLatitude,col=more_than_thousand)
+    ) +
+    ggtitle("Emperor") +
+    theme_void()
+
+```
+
+### Activity - Try a new species with your groupmates
+<!-- (Will) -->
+
+**Goal:** Work with your group to make a map of a different penguin species, using the code above as a template.
+
+Steps
+
+1. Identify the coder and the consulting coder(s)
+2. Pick a penguin species with your new coding friends
+3. Make a global map of that species by modifying the code above
+4. Store the output in a sensible place with a sensible name
+5. Find and exclude some dodgy gbif data (with code)
+6. Push your code to github (not the figure!)
+6. Other person pulls the code and remakes the figure
+8. Runs the code and checks it 
+9. :)
+
+Place for your code here:
+```{r}
+
+
+```
+
+
+## Organisation
+<!-- (Daniel) -->
+
+Discuss importance of being organised and using a reliable structure for project
+
+- what is a project? Self contained analysis
+- directory, folder structure: data, downloads, outputs, R, docs, src
+- clear entry points: Readme.md, Analysis.qmd
+- Rstudio projects: `*.Rproj`
+
+## Data curation and storage
+<!-- (Will) -->
+
+Discuss strategies for managing data in a project
+
+- where to store data (e.g., data/ folder)
+- read-only access for raw data
+- metadata documentation (e.g., data dictionary)
+
+## Document types
+<!-- (Daniel) -->
+
+Discuss types of documents and their purposes in a project
+
+- `.md`: Markdown files for documentation, notes, and README files. Use these for general project documentation, instructions, and summaries that are readable on GitHub and other platforms.
+- `.Rmd` or `.qmd`: R Markdown (`.Rmd`) or Quarto (`.qmd`) files for combining code, results, and narrative text. These are used to create dynamic, reproducible reports, analyses, and presentations that integrate code and output.
+- `.R`: Plain R script files for standalone code, functions, and scripts that perform specific tasks or analyses. Use these for reusable code, data cleaning, or utility functions that can be sourced into your main analysis documents.
+
+**Activity:**
+
+In your project directory, create a new notebook via a qmd file. Render it into html.
+
+Steps:
+
+1. Create a new file in your project directory with the name `analysis.qmd`.
+2. Update the YAML header at the top of the file with the title and format.
+3. Add some text with some formatting
+4. Add some code in a code chunk.
+5. Render the document into html
+6. Open the html file in your browser to view the output.
+7. Commit the code to your GitHub repository. But only commit the `.qmd` file, not the rendered `.html` file.
+8. Add html file to `.gitignore` so it doesn't get committed in the future.
+9. Push the changes to your GitHub repository.
+
+## Reproducible code
+<!-- (Daniel) -->
+
+Discuss the importance of reproducible code for your own work and for science in general
+
+- Reproducible code is code that can be run by anyone, anywhere, at any time, and produces the same results.
+- How we achieve this: 
+  - rerun all the time as project develops
+    - catches: broken code, missing dependencies,
+    - traps: broken code, package updates, rversion, slow compute (cluster), manual steps
+  - clean master script 
+  - Strive to maintain clean, working code
+  - version control is your friend
+
+## Saving outputs
+<!-- (Will, Daniel) -->
+
+**Goal**: discuss how to save outputs of your analysis in code (not manually)
+
+figures (Will): 
+  - ggsave, specify sizes, code it
+  - formats: pdf vs png
+
+Rendering docs (Daniel)
+  - render docs: suppmat or reports
+    - point & click vs coded
+    - can format nicely
+
+## Optimise Rstudio setup
+<!-- (Daniel) -->
+
+**Goal**: set up Rstudio for reproducible research
+
+- Rstudio project
+- Rstudio settings (Tools > Global Options)
+  - no caching, 
+  - outputs to console
+  - don't save env
+  - regularly regenerate data and outputs from scratch
+
+

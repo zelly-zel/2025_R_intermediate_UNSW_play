@@ -1,0 +1,470 @@
+---
+title: "Day 2 - Scaling up your computations"
+format: 
+  html:
+    embed-resources: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction
+
+In this session, we will look at strategies to scale up our analyses. How do we get R to repeat tasks in an efficient way? This session will be a mix of live coding and challenges. 
+
+We will be using the {tidyverse} packages to help us with this. We will also be using the {penguins} dataset, which is a collection of data on penguin species from Antarctica. The dataset includes information on individual counts, species, and other relevant variables.
+
+## Schedule
+
+- 08:30-09:00: any pre-class issues
+- 09:00-10:30: Session 1 - Techniques for scaling up your computations
+  - introduce the penguins data
+  - introduce the challenges
+  - introduce the tools we will use
+- 10:30-11:00: Morning tea
+- 11:00-12:30: Session 2 - Work to solve challenges
+- 12:30-13:15: Lunch
+- 13:15-14:45: Session 3 - Work to solve challenges
+- 15:00-16:00: Session 4 - Review solutions to challenges
+
+# (Re)Introducing the penguins data
+<!--- Will --->
+
+- (Re)introduce the Penguins data
+
+# Techniques for scaling up your computations
+<!--- Dan --->
+
+Why do we need to scale up?
+
+A common challenge: Repeating things
+
+- split, apply, combine
+- Abstraction 
+  - What are inputs, outputs, common process
+
+Several tools that can help us apply this workflow
+
+- tidyverse: tables, group_by, summarise/mutate (Will)
+  - start wiuth table, then split , apply, combine
+- ggplot: facets (Will)
+- refresh: lists, vectors, tables, --> things to split (Will)
+- map: for lists / vectors (Aniko)
+- functions (Dan)
+- nest (Dan)
+
+
+## Load libraries
+
+We will primarily be using packages from the {tidyverse}, feel free to add more packages here to help solve the challenges.
+
+```{r}
+library(tidyverse)
+dir.create("output")
+```
+
+
+## Challenge 0 - Loading data from many files
+
+We have just returned from an expedition from Anatarcia and collected *a lot* of data from multiple species of penguins. Sometimes "we" counted the penguins.  Sometimes we didn't.  We recorded data for each species in separate `.csv` files but **we need to combine these into one large dataframe for analyses. How can we do this programmatically?** 
+
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 1 - Import common names
+
+We only have latin names for each species of penguin but we need common names for when we report our results to stakeholders. Our collaborator started compiling common names in a separate `.csv` in the `data/` folder. **Compile the common names for the remaining taxa and join these into the dataframe `penguins_combined`. You may need to import the `penguins_combined.csv` into R first. 
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+## Challenge 2 - Add n_records as a column
+
+For your analysis, you need to calculate the total number of records available for each species, and add that as a new column in your data.
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 3 - Determine the top 3 most recorded taxa
+
+We need to know which are the top 3 species that we have the the most records. Can you figure which species are these?
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 4 - Excluding rogue data
+
+We need to clean the data a little before we analyse it. Clean the data so that we have
+
+- Individual counts < 0
+- Observations from iNaturalist and eBird using the `institutionCode` (the code for eBird is confusingly "CLO"; the code for iNaturalist is more sensibly "iNaturalist")
+
+Export this dataset as a `.csv`
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 5 - Add Size information
+
+We need to get compute the average bill and flipper dimensions using the `penguin_sizes` data and nd merge this into the `penguins_combined` dataset. You name need to wrangle/create the penguin names a little
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+## Challenge 6 - Export data by year
+
+Your collaborator at the museum requires the giant penguin dataset to be broken down and saved as `.csv` by year. Solve this challenge with code!!
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 7 - How much do different penguin species migrate
+
+Your penguin collaborator knows from natural history knowledge that some penguins migrate and others don't but no one has ever quantified this.  Calculate the difference between the summer median latitude and the winter median latitude for each species.  (Median is more robust to outliers so that's more appropriate here compared to the mean.) Note there may be species with missing data for certain seasons and this may lead to missing species in the final plot. 
+
+Make a plot of species by degrees latitude migrated.    
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 8 - Lots of descriptive statistics
+
+We need to report on some descriptive statistics of our penguin study. We need to know the following:
+
+- How many different genera are represented in our dataset
+- How many different species do we have for each genera
+- Calculate the proportion of points from iNaturalist and eBird using the institutionCode (the code for eBird is confusingly "CLO"; the code for iNaturalist is more sensibly "iNaturalist")
+- How many records by species
+- How many records by year
+- How many records by country code
+- How many records by basis of record
+
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 9 - Facet plot and export plots
+
+We want some good visualisations of our data.
+
+a. Make a multipanel plot of global distribution of penguins, with a panel for each genus
+b. Make a multipanel plot of by month
+c. Make a multipanel plot of by genus on the y-axis and individual count (<10 or >=10) on the x-axis
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+  
+```
+
+
+## Challenge 10 - Plot country x species presence-absence
+
+You want to make a graph of country x species, colouring for each species if it present in each country.
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 11 - Make a lot of maps
+
+Make a folder and make 17 pdfs, one for each penguin species, with a map of that species.  Make the title of the plot include both the common name of the speices and the scientific name.  Make the file name the scientific name.
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r}
+
+```
+
+
+
+## Challenge 12 - Fit lots of models
+
+In your analyses, sometimes you need to fit one complex model, other times you might be fitting many seperate models. How do we do that efficiently?
+
+You been asked to fit a linear model between log_count and latitude, for each speces. Fit the models and extract the r2 for each model fit.
+
+In words, describe what are the steps to solve the challenge: 
+
+- 
+- 
+- 
+
+How would you solve this problem using existing knowledge: 
+
+-
+-
+-
+
+Try solving this in R using new skills:
+
+```{r, learner-solutions}
+
+```
+
+Demonstrator solutions: 
+
+```{r, instructor-solutions}
+
+```
+
+
+## Challenge 13 - Combining nest and map
+
+```{r}
+
+
+```
+
+
