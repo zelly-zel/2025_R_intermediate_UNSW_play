@@ -125,11 +125,11 @@ Activities (slide + demo):
 
 1. Open GitHub Desktop.
 2. Click "File" > "Clone repository".
-3. In the "URL" tab, paste the repository URL from GitHub.
-  - https://github.com/nicercode/2025_R_intermediate_UNSW_play
+3. In the "URL" tab, paste the repository URL from GitHub. https://github.com/nicercode/2025_R_intermediate_UNSW_play
 4. Choose the local path where you want to save the repo.
 5. Click "Clone".
 6. test.
+7. test 2.
 
 ### Create your own repo
 
