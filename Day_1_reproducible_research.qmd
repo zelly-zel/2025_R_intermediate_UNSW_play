@@ -128,6 +128,7 @@ Activities (slide + demo):
 3. In the "URL" tab, paste the repository URL from GitHub. https://github.com/nicercode/2025_R_intermediate_UNSW_play
 4. Choose the local path where you want to save the repo.
 5. Click "Clone".
+6. test.
 
 ### Create your own repo
 
