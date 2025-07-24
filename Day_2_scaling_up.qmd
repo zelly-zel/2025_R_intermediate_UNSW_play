@@ -88,7 +88,13 @@ Try solving this in R using new skills:
 
 Demonstrator solutions: 
 ```{r, instructor-solutions}
+# Map workflow for read_csv
+penguins_combined <- 
+  list.files("data/penguins/", pattern=".csv",full.names = TRUE) |> 
+  map(read_csv, show_col_types = FALSE) |> 
+  list_rbind()
 
+write_csv(penguins_combined, "data-processed/penguin_combined.csv")
 ```
 
 
@@ -117,7 +123,17 @@ Try solving this in R using new skills:
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+# Read in combined dataset
+penguins_combined <- read_csv("data-processed/penguin_combined.csv")
 
+# Read in common names
+penguins_common_names <- read_csv("data/penguin_common_names.csv")
+
+# Join in common names
+penguins_combined_with_common_names <- 
+  penguins_combined |> 
+  left_join(penguins_common_names,  
+    by = join_by(species == scientific_name))
 ```
 
 ## Challenge 2 - Add n_records as a column
