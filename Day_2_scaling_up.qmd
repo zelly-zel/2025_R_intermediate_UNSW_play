@@ -165,6 +165,24 @@ penguins_combined_n_records_by_species <-
   ungroup()
 ```
 
+Summarise is also very useful
+
+```{r}
+penguins_combined |> 
+  group_by(species) |> 
+  summarise(
+    n_records = n(),
+    max_count = max(individualCount, na.rm = TRUE),
+    ) 
+
+ penguins_combined |> 
+  group_by(species, countryCode) |> 
+  summarise(
+    n_records = n(),
+    across(where(is.numeric), mean, na.rm=TRUE)
+    ) 
+```
+
 
 ## Challenge 3 - Determine the top 3 most recorded taxa
 
