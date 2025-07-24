@@ -123,9 +123,6 @@ Try solving this in R using new skills:
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
-# Read in combined dataset
-penguins_combined <- read_csv("data-processed/penguin_combined.csv")
-
 # Read in common names
 penguins_common_names <- read_csv("data/penguin_common_names.csv")
 
@@ -161,7 +158,11 @@ Try solving this in R using new skills:
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
-
+penguins_combined_n_records_by_species <- 
+  penguins_combined |> 
+  group_by(species) |> 
+  mutate(n_records = n()) |> 
+  ungroup()
 ```
 
 
