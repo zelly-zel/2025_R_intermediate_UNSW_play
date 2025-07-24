@@ -98,8 +98,14 @@ penguins_data_1 <- pathway |> lapply(read_csv)
 
 Demonstrator solutions: 
 ```{r, instructor-solutions}
+# Map workflow for read_csv
+penguins_combined <- 
+  list.files("data/penguins/", pattern=".csv",full.names = TRUE) |> 
+  map(read_csv, show_col_types = FALSE) |> 
+  list_rbind()
 
 
+write_csv(penguins_combined, "data-processed/penguin_combined.csv")
 
 ```
 
@@ -137,8 +143,15 @@ penguins_combined_1 <- left_join(penguins_data, existing_data,
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+# Read in common names
+penguins_common_names <- read_csv("data/penguin_common_names.csv")
 
 
+# Join in common names
+penguins_combined_with_common_names <- 
+  penguins_combined |> 
+  left_join(penguins_common_names,  
+    by = join_by(species == scientific_name))
 
 ```
 
@@ -184,7 +197,33 @@ group_by() |> summarise()
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+penguins_combined_n_records_by_species <- 
+  penguins_combined |> 
+  group_by(species) |> 
+  mutate(n_records = n()) |> 
+  ungroup()
+```
 
+
+
+
+Summarise is also very useful
+
+```{r}
+penguins_counts <-
+  penguins_combined |> 
+  group_by(species) |> 
+  summarise(
+    n_records = n(),
+    max_count = max(individualCount, na.rm = TRUE),
+    ) 
+
+ penguins_combined |> 
+  group_by(species, countryCode) |> 
+  summarise(
+    n_records = n(),
+    across(where(is.numeric), mean, na.rm=TRUE)
+    ) 
 
 ```
 
@@ -222,12 +261,20 @@ penguins_counts |> arrange(desc(individuals) |> slice(1:3)
 top <- penguins_combined |> distinct(species, individuals)
 top[1:3,]
 
+head(penguins_counts[rev(order(penguins_counts$n_records)),],3)
+
+penguins_counts |>
+  arrange(desc(n_records)) |> 
+  slice(1:3)
+
 ```
 
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
-
+penguins_combined_n_records_by_species |> 
+  distinct(species, n_records) |> 
+  slice_max(order_by = n_records, n = 3) 
 ```
 
 
@@ -256,15 +303,28 @@ Try solving this in R using new skills:
 
 ```{r, learner-solutions}
 
+
 penguins_id <- penguins_combined |> filter(individuals > 0, institutionCode %in% c("iNaturalist","CLO"))
 
 penguins_combined |> filter(individuals > 0, str_detect(occurrenceID, "inaturalist|CLO" )) |> write.csv("data/penguins_id.csv")
+
+
 
 ```
 
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+penguins_combined |> 
+  count(basisOfRecord)
+
+penguins_combined |> 
+  filter(individualCount > 0,
+         ! (institutionCode %in% c("iNaturalist", "CLO")) )
+
+penguins_combined |> 
+  filter(individualCount > 0,
+         str_detect(institutionCode, "iNaturalist|CLO"))
 
 ```
 
@@ -314,7 +374,49 @@ penguin_combined_2 <- left_join(penguins_combined, penguin_dim,
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+# Read in common names
+penguins_common_names <- read_csv("data/penguin_common_names.csv")
 
+# Join in common names
+penguins_combined_with_common_names <- 
+  penguins_combined |> 
+  left_join(penguins_common_names,  
+    by = join_by(species == scientific_name))
+
+# Read in body mass
+penguin_size <- read_csv("data/penguin_sizes.csv")
+
+# Join in taxonomic information
+penguin_size$species |> unique()
+
+penguin_size_new_name <- 
+  penguin_size |> 
+  mutate(full_common_name = paste(species, "penguin")) |> 
+  select(full_common_name, species:year)
+
+penguin_size_new_name |> count(full_common_name)
+
+penguin_averages <- 
+  penguin_size_new_name |> 
+  group_by(full_common_name) |> 
+  summarise(
+    mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE),
+    mean_bill_depth_mm = mean(bill_depth_mm, na.rm = TRUE),
+    mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE)
+    ) 
+
+# Join bill dimensions
+penguins_combined_with_common_names |> count(common_name)
+
+# Check if names exist
+unique(penguins_combined_with_common_names$common_name)
+
+unique(penguin_size_new_name$full_common_name)
+
+# Join bill data
+penguins_combined_with_common_names |> 
+  left_join(penguin_averages, 
+            by = join_by(common_name == full_common_name))
 ```
 
 ## Challenge 6 - Export data by year
@@ -379,7 +481,30 @@ walk2() --> list, yearnames)
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+penguins_combined
 
+# create directory for output
+dir.create("output/by_years", recursive = TRUE, showWarnings = FALSE)
+
+# option - using a for loop
+for(y in unique(penguins_combined$year)) {
+  penguins_combined |> filter(year == y) |> 
+    write_csv(file = paste0("output/by_years/penguins_", y, ".csv"))
+}
+
+# option - using map2 or walk2
+penguins_list_by_year <- 
+  penguins_combined |>
+  split(~year)
+
+files <- paste0("output/by_years/penguins_", names(penguins_list_by_year), ".csv")
+
+walk2(penguins_list_by_year, files, write_csv)
+  
+# option - using imap, or iwalk
+penguins_combined |>
+  split(~year) |>
+  iwalk(~write_csv(.x, file = paste0("output/by_years/penguins_", .y, ".csv")))
 ```
 
 
