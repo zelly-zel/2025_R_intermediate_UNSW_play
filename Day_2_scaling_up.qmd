@@ -168,7 +168,8 @@ penguins_combined_n_records_by_species <-
 Summarise is also very useful
 
 ```{r}
-penguins_combined |> 
+penguins_counts <-
+  penguins_combined |> 
   group_by(species) |> 
   summarise(
     n_records = n(),
@@ -204,12 +205,20 @@ Try solving this in R using new skills:
 
 ```{r, learner-solutions}
 
+head(penguins_counts[rev(order(penguins_counts$n_records)),],3)
+
+penguins_counts |>
+  arrange(desc(n_records)) |> 
+  slice(1:3)
+
 ```
 
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
-
+penguins_combined_n_records_by_species |> 
+  distinct(species, n_records) |> 
+  slice_max(order_by = n_records, n = 3) 
 ```
 
 
@@ -238,11 +247,23 @@ Try solving this in R using new skills:
 
 ```{r, learner-solutions}
 
+
+
 ```
 
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+penguins_combined |> 
+  count(basisOfRecord)
+
+penguins_combined |> 
+  filter(individualCount > 0,
+         ! (institutionCode %in% c("iNaturalist", "CLO")) )
+
+penguins_combined |> 
+  filter(individualCount > 0,
+         str_detect(institutionCode, "iNaturalist|CLO"))
 
 ```
 
