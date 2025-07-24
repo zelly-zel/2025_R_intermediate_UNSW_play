@@ -293,7 +293,49 @@ Try solving this in R using new skills:
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+# Read in common names
+penguins_common_names <- read_csv("data/penguin_common_names.csv")
 
+# Join in common names
+penguins_combined_with_common_names <- 
+  penguins_combined |> 
+  left_join(penguins_common_names,  
+    by = join_by(species == scientific_name))
+
+# Read in body mass
+penguin_size <- read_csv("data/penguin_sizes.csv")
+
+# Join in taxonomic information
+penguin_size$species |> unique()
+
+penguin_size_new_name <- 
+  penguin_size |> 
+  mutate(full_common_name = paste(species, "penguin")) |> 
+  select(full_common_name, species:year)
+
+penguin_size_new_name |> count(full_common_name)
+
+penguin_averages <- 
+  penguin_size_new_name |> 
+  group_by(full_common_name) |> 
+  summarise(
+    mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE),
+    mean_bill_depth_mm = mean(bill_depth_mm, na.rm = TRUE),
+    mean_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE)
+    ) 
+
+# Join bill dimensions
+penguins_combined_with_common_names |> count(common_name)
+
+# Check if names exist
+unique(penguins_combined_with_common_names$common_name)
+
+unique(penguin_size_new_name$full_common_name)
+
+# Join bill data
+penguins_combined_with_common_names |> 
+  left_join(penguin_averages, 
+            by = join_by(common_name == full_common_name))
 ```
 
 ## Challenge 6 - Export data by year
@@ -321,7 +363,30 @@ Try solving this in R using new skills:
 Demonstrator solutions: 
 
 ```{r, instructor-solutions}
+penguins_combined
 
+# create directory for output
+dir.create("output/by_years", recursive = TRUE, showWarnings = FALSE)
+
+# option - using a for loop
+for(y in unique(penguins_combined$year)) {
+  penguins_combined |> filter(year == y) |> 
+    write_csv(file = paste0("output/by_years/penguins_", y, ".csv"))
+}
+
+# option - using map2 or walk2
+penguins_list_by_year <- 
+  penguins_combined |>
+  split(~year)
+
+files <- paste0("output/by_years/penguins_", names(penguins_list_by_year), ".csv")
+
+walk2(penguins_list_by_year, files, write_csv)
+  
+# option - using imap, or iwalk
+penguins_combined |>
+  split(~year) |>
+  iwalk(~write_csv(.x, file = paste0("output/by_years/penguins_", .y, ".csv")))
 ```
 
 
